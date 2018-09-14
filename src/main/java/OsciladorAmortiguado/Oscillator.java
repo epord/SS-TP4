@@ -1,6 +1,7 @@
 package OsciladorAmortiguado;
 
 import OsciladorAmortiguado.ForceCalculators.OscillatorForce;
+import OsciladorAmortiguado.StepCalculators.BeemanCalculator;
 import OsciladorAmortiguado.StepCalculators.LeapFrogVelvetCalculator;
 import OsciladorAmortiguado.StepCalculators.StepCalculator;
 
@@ -14,13 +15,14 @@ public class Oscillator {
         Double currentTime = 0.0;
         Double timeLimit = 1.0;
 
-        StepCalculator stepCalculator = new LeapFrogVelvetCalculator(new OscillatorForce(), deltaT);
 
         List<Particle> particles = new ArrayList<>();
         int id = 0;
         Particle p = new Particle(id++, new Vector(1.0, 0.0), new Vector(0.0, 0.0), new Vector(0.0, 0.0), 70.0);
         particles.add(p);
 
+//        StepCalculator stepCalculator = new LeapFrogVelvetCalculator(new OscillatorForce(), deltaT);
+        StepCalculator stepCalculator = new BeemanCalculator(new OscillatorForce(), deltaT, particles);
 
         while(currentTime < timeLimit) {
             for (Particle particle : particles) {

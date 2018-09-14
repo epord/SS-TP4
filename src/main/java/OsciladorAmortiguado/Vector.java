@@ -1,12 +1,20 @@
 package OsciladorAmortiguado;
 
 public class Vector {
-    public Double x;
-    public Double y;
+    private Double x;
+    private Double y;
 
     public Vector(Double x, Double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Double getX() {
+        return x;
+    }
+
+    public Double getY() {
+        return y;
     }
 
     public Vector minus(Vector v) {
@@ -18,7 +26,7 @@ public class Vector {
     }
 
     public Vector dot(Double c) {
-        return new Vector(x * c, y * x);
+        return new Vector(x * c, y * c);
     }
 
     public Vector dot (Vector v) {

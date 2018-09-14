@@ -1,7 +1,4 @@
-import OsciladorAmortiguado.ForceCalculators.OscillatorForce;
 import OsciladorAmortiguado.Oscillator;
-import OsciladorAmortiguado.StepCalculators.LeapFrogVelvet;
-import OsciladorAmortiguado.StepCalculators.StepCalculator;
 
 public class Main {
 

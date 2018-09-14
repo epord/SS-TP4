@@ -8,11 +8,13 @@ import java.util.List;
 public abstract class StepCalculator {
 
     ForceCalculator forceCalculator;
+    Double deltaT;
 
-    public StepCalculator(ForceCalculator forceCalculator) {
+    public StepCalculator(ForceCalculator forceCalculator, Double deltaT) {
         this.forceCalculator = forceCalculator;
+        this.deltaT = deltaT;
     }
 
-    public abstract void updateParticles(List<Particle> particles, Double deltaT);
+    public abstract List<Particle> updateParticles(List<Particle> particles);
 
 }

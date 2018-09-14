@@ -1,18 +1,24 @@
 package OsciladorAmortiguado;
 
+import java.util.Objects;
+
 public class Particle {
+    private Integer id;
     private Vector position;
     private Vector velocity;
+    private Vector acceleration;
     private Double mass;
 
-    public Particle(Vector position, Vector velocity, Double mass) {
+    public Particle(Integer id, Vector position, Vector velocity, Vector acceleration, Double mass) {
+        this.id =id;
         this.velocity = velocity;
         this.position = position;
+        this.acceleration = acceleration;
         this.mass = mass;
     }
 
-    public void setPosition(Vector newPosition) {
-        this.position = newPosition;
+    public Particle getCopyWithPosition(Vector newPosition) {
+        return new Particle(id, newPosition, velocity, acceleration, mass);
     }
 
     public Vector getPosition() {
@@ -23,11 +29,36 @@ public class Particle {
         return velocity;
     }
 
-    public void setVelocity(Vector velocity) {
-        this.velocity = velocity;
+    public Particle getCopyWithVelocity(Vector newVelocity) {
+        return new Particle(id, position, newVelocity, acceleration, mass);
+    }
+
+    public Vector getAcceleration() {
+        return acceleration;
+    }
+
+    public Particle getCopyWithAcceleration(Vector newAcceleration) {
+        return new Particle(id, position, velocity, newAcceleration, mass);
     }
 
     public Double getMass() {
         return mass;
+    }
+
+    public Integer getID() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Particle particle = (Particle) o;
+        return Objects.equals(id, particle.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

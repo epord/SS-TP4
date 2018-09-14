@@ -1,7 +1,7 @@
 package OsciladorAmortiguado;
 
 import OsciladorAmortiguado.ForceCalculators.OscillatorForce;
-import OsciladorAmortiguado.StepCalculators.LeapFrogVelvet;
+import OsciladorAmortiguado.StepCalculators.LeapFrogVelvetCalculator;
 import OsciladorAmortiguado.StepCalculators.StepCalculator;
 
 import java.util.ArrayList;
@@ -10,21 +10,23 @@ import java.util.List;
 public class Oscillator {
 
     public void start() {
-        StepCalculator stepCalculator = new LeapFrogVelvet(new OscillatorForce());
-
-        List<Particle> particles = new ArrayList<>();
-        Particle p = new Particle(new Vector(1.0, 0.0), new Vector(0.0, 0.0), 70.0);
-        particles.add(p);
-
         Double deltaT = 0.01;
         Double currentTime = 0.0;
         Double timeLimit = 1.0;
 
+        StepCalculator stepCalculator = new LeapFrogVelvetCalculator(new OscillatorForce(), deltaT);
+
+        List<Particle> particles = new ArrayList<>();
+        int id = 0;
+        Particle p = new Particle(id++, new Vector(1.0, 0.0), new Vector(0.0, 0.0), new Vector(0.0, 0.0), 70.0);
+        particles.add(p);
+
+
         while(currentTime < timeLimit) {
             for (Particle particle : particles) {
-                System.out.print(particle.getPosition().x + " ");
+                System.out.print(particle.getPosition().getX() + " ");
             }
-            stepCalculator.updateParticles(particles, deltaT);
+            particles = stepCalculator.updateParticles(particles);
             currentTime += deltaT;
         }
     }

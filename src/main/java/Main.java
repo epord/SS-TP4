@@ -37,12 +37,12 @@ public class Main {
 
 
     private static void runPlanetsSimulation() {
-        Double ua2m = 149597870000.700;
-        Double kph2mps = 1000.0 / 60.0 / 60.0;
-        Double day2s = 86400.0;
-        Double uapd2mps = ua2m / day2s; // ua/day to m/s
+        Double au2m = 149597870000.700;         // astronomical units to meters
+        Double kph2mps = 1000.0 / 60.0 / 60.0;  // km/h to m/s
+        Double day2s = 86400.0;                 // day to seconds
+        Double aupd2mps = au2m / day2s;         // au/day to m/s
 
-        Double deltaT = 1 * day2s;
+        Double deltaT = 1.0 * day2s;
         Double timeLimit =70.0 * (365.0 * day2s);
 
         int id = 0;
@@ -52,18 +52,18 @@ public class Main {
                 new Vector(0.0, 0.0),
                 1.989E30);
         Particle earth = new Particle(id++,
-                new Vector(9.622458737735928E-01 * ua2m, -3.008758740699761E-01 * ua2m),
-                new Vector( 4.860249247919289E-03 * uapd2mps, 1.635384540738565E-02 * uapd2mps),
+                new Vector(9.622458737735928E-01 * au2m, -3.008758740699761E-01 * au2m),
+                new Vector( 4.860249247919289E-03 * aupd2mps, 1.635384540738565E-02 * aupd2mps),
                 new Vector(0.0, 0.0),
                 5.972E24);
         Particle jupiter = new Particle(id++,
-                new Vector(7.075029308889577E-01 * ua2m, 5.047888436652260E+00 * ua2m),
-                new Vector(-7.569079811247934E-03 * uapd2mps, 1.400382906341323E-03 * uapd2mps),
+                new Vector(7.075029308889577E-01 * au2m, 5.047888436652260E+00 * au2m),
+                new Vector(-7.569079811247934E-03 * aupd2mps, 1.400382906341323E-03 * aupd2mps),
                 new Vector(0.0, 0.0),
                 1898.13E24);
         Particle saturn = new Particle(id++,
-                new Vector(-7.189894984015172E+00 * ua2m, 5.711846800529872E+00 * ua2m),
-                new Vector(-3.778021070773957E-03 * uapd2mps, -4.383919949255058E-03 * uapd2mps),
+                new Vector(-7.189894984015172E+00 * au2m, 5.711846800529872E+00 * au2m),
+                new Vector(-3.778021070773957E-03 * aupd2mps, -4.383919949255058E-03 * aupd2mps),
                 new Vector(0.0, 0.0),
                 5.6834E26);
         List<Particle> particles = Arrays.asList(sun, earth, jupiter, saturn);

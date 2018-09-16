@@ -51,18 +51,18 @@ public class PlanetsSimulator {
         // Sun
         int frame = 0;
         int finalFrameCount = 2000;
-        Double ua2m = 1.496E11;
+        Double au2m = 149597870000.700;
         System.out.print("xsun=[");
         for (Double x : xPos0)
             if (frame++ % (xPos0.size() / finalFrameCount) == 0) {
-                System.out.print(x/ua2m + " ");
+                System.out.print(x/au2m + " ");
             }
         System.out.println("];");
         frame = 0;
         System.out.print("ysun=[");
         for (Double y: yPos0)
             if (frame++ % (xPos0.size() / finalFrameCount) == 0) {
-                System.out.print(y/ua2m + " ");
+                System.out.print(y/au2m + " ");
             }
         System.out.println("];");
 
@@ -71,14 +71,14 @@ public class PlanetsSimulator {
         System.out.print("xear=[");
         for (Double x : xPos1)
             if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(x/ua2m + " ");
+                System.out.print(x/au2m + " ");
             }
         System.out.println("];");
         frame = 0;
         System.out.print("year=[");
         for (Double y: yPos1)
             if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(y/ua2m + " ");
+                System.out.print(y/au2m + " ");
             }
         System.out.println("];");
 
@@ -87,14 +87,14 @@ public class PlanetsSimulator {
         System.out.print("xjup=[");
         for (Double x : xPos2)
             if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(x/ua2m + " ");
+                System.out.print(x/au2m + " ");
             }
         System.out.println("];");
         frame = 0;
         System.out.print("yjup=[");
         for (Double y: yPos2)
             if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(y/ua2m + " ");
+                System.out.print(y/au2m + " ");
             }
         System.out.println("];");
 
@@ -103,14 +103,14 @@ public class PlanetsSimulator {
         System.out.print("xsat=[");
         for (Double x : xPos3)
             if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(x/ua2m + " ");
+                System.out.print(x/au2m + " ");
             }
         System.out.println("];");
         frame = 0;
         System.out.print("ysat=[");
         for (Double y: yPos3)
             if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(y/ua2m + " ");
+                System.out.print(y/au2m + " ");
             }
         System.out.println("];");
 

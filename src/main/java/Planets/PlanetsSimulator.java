@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlanetsSimulator {
-    Double deltaT;
-    Double timeLimit;
+    private Double deltaT;
+    private Double timeLimit;
     private StepCalculator stepCalculator;
-    private List<Particle> particles = new ArrayList<>();
+    private List<Particle> particles;
 
     public PlanetsSimulator(Double deltaT, Double timeLimit, StepCalculator stepCalculator, List<Particle> particles) {
         this.deltaT = deltaT;
@@ -27,6 +27,8 @@ public class PlanetsSimulator {
         List<Double> yPos1 = new ArrayList<>();
         List<Double> xPos2 = new ArrayList<>();
         List<Double> yPos2 = new ArrayList<>();
+        List<Double> xPos3 = new ArrayList<>();
+        List<Double> yPos3 = new ArrayList<>();
         while(currentTime < timeLimit) {
             xPos0.add(particles.get(0).getPosition().getX());
             yPos0.add(particles.get(0).getPosition().getY());
@@ -34,6 +36,8 @@ public class PlanetsSimulator {
             yPos1.add(particles.get(1).getPosition().getY());
             xPos2.add(particles.get(2).getPosition().getX());
             yPos2.add(particles.get(2).getPosition().getY());
+            xPos3.add(particles.get(3).getPosition().getX());
+            yPos3.add(particles.get(3).getPosition().getY());
             particles = stepCalculator.updateParticles(particles);
             currentTime += deltaT;
         }
@@ -103,8 +107,27 @@ public class PlanetsSimulator {
             }
         System.out.println("];");
 
-        System.out.println("plot(xsun, ysun, 'x', 'color', 'r', xear, year, 'b', xjup, yjup, 'm')");
-        System.out.println("axis([-6 6 -6 6])");
+
+        frame = 0;
+        System.out.print("xsat=[");
+        for (Double x : xPos3)
+            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
+                System.out.print(x/ua2m + " ");
+            }
+        System.out.print("];");
+
+        System.out.println();
+
+        frame = 0;
+        System.out.print("ysat=[");
+        for (Double y: yPos3)
+            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
+                System.out.print(y/ua2m + " ");
+            }
+        System.out.println("];");
+
+        System.out.println("plot(xsun, ysun, 'x', 'color', 'r', xear, year, 'b', xjup, yjup, 'm', xsat, ysat, 'k')");
+        System.out.println("axis([-10 10 -10 10])");
         System.out.println("axis square");
         System.out.println("endfunction");
     }

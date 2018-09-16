@@ -2,6 +2,8 @@ package OsciladorAmortiguado;
 
 import OsciladorAmortiguado.ForceCalculators.OscillatorForce;
 import OsciladorAmortiguado.StepCalculators.BeemanCalculator;
+import OsciladorAmortiguado.StepCalculators.GearCalculator;
+import OsciladorAmortiguado.StepCalculators.GearCalculatorUtils.GearOscillatorUtils;
 import OsciladorAmortiguado.StepCalculators.LeapFrogVelvetCalculator;
 import OsciladorAmortiguado.StepCalculators.StepCalculator;
 
@@ -22,7 +24,8 @@ public class Oscillator {
         particles.add(p);
 
 //        StepCalculator stepCalculator = new LeapFrogVelvetCalculator(new OscillatorForce(), deltaT);
-        StepCalculator stepCalculator = new BeemanCalculator(new OscillatorForce(), deltaT, particles);
+//        StepCalculator stepCalculator = new BeemanCalculator(new OscillatorForce(), deltaT, particles);
+        StepCalculator stepCalculator = new GearCalculator(new OscillatorForce(), deltaT, new GearOscillatorUtils(), particles);
 
         while(currentTime < timeLimit) {
             for (Particle particle : particles) {
@@ -32,5 +35,4 @@ public class Oscillator {
             currentTime += deltaT;
         }
     }
-
 }

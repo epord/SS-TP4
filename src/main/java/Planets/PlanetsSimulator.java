@@ -48,6 +48,7 @@ public class PlanetsSimulator {
 
         System.out.println("function solar()");
 
+        // Sun
         int frame = 0;
         int finalFrameCount = 2000;
         Double ua2m = 1.496E11;
@@ -56,30 +57,23 @@ public class PlanetsSimulator {
             if (frame++ % (xPos0.size() / finalFrameCount) == 0) {
                 System.out.print(x/ua2m + " ");
             }
-        System.out.print("];");
-
-        System.out.println();
-
+        System.out.println("];");
         frame = 0;
         System.out.print("ysun=[");
         for (Double y: yPos0)
             if (frame++ % (xPos0.size() / finalFrameCount) == 0) {
                 System.out.print(y/ua2m + " ");
             }
-        System.out.print("];");
+        System.out.println("];");
 
-        System.out.println();
-
+        // Earth
         frame = 0;
         System.out.print("xear=[");
         for (Double x : xPos1)
             if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
                 System.out.print(x/ua2m + " ");
             }
-        System.out.print("];");
-
-        System.out.println();
-
+        System.out.println("];");
         frame = 0;
         System.out.print("year=[");
         for (Double y: yPos1)
@@ -88,17 +82,14 @@ public class PlanetsSimulator {
             }
         System.out.println("];");
 
-
+        // Jupiter
         frame = 0;
         System.out.print("xjup=[");
         for (Double x : xPos2)
             if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
                 System.out.print(x/ua2m + " ");
             }
-        System.out.print("];");
-
-        System.out.println();
-
+        System.out.println("];");
         frame = 0;
         System.out.print("yjup=[");
         for (Double y: yPos2)
@@ -107,17 +98,14 @@ public class PlanetsSimulator {
             }
         System.out.println("];");
 
-
+        // Saturn
         frame = 0;
         System.out.print("xsat=[");
         for (Double x : xPos3)
             if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
                 System.out.print(x/ua2m + " ");
             }
-        System.out.print("];");
-
-        System.out.println();
-
+        System.out.println("];");
         frame = 0;
         System.out.print("ysat=[");
         for (Double y: yPos3)

@@ -1,4 +1,4 @@
-package OsciladorAmortiguado;
+package Models;
 
 public class Vector {
     private Double x;

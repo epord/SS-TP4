@@ -1,7 +1,7 @@
-package OsciladorAmortiguado.StepCalculators.GearCalculatorUtils;
+package CalculationMethods;
 
-import OsciladorAmortiguado.Particle;
-import OsciladorAmortiguado.Vector;
+import Models.Particle;
+import Models.Vector;
 
 import java.util.List;
 

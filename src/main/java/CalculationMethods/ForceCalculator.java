@@ -1,7 +1,7 @@
-package OsciladorAmortiguado.ForceCalculators;
+package CalculationMethods;
 
-import OsciladorAmortiguado.Particle;
-import OsciladorAmortiguado.Vector;
+import Models.Particle;
+import Models.Vector;
 
 import java.util.Collection;
 

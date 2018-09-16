@@ -1,18 +1,21 @@
-package OsciladorAmortiguado.StepCalculators;
+package CalculationMethods.Implementations;
 
-import OsciladorAmortiguado.ForceCalculators.ForceCalculator;
-import OsciladorAmortiguado.Particle;
-import OsciladorAmortiguado.StepCalculators.StepCalculator;
-import OsciladorAmortiguado.Vector;
+import CalculationMethods.ForceCalculator;
+import CalculationMethods.StepCalculator;
+import Models.Particle;
+import Models.Vector;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LeapFrogVelvetCalculator extends StepCalculator {
+public class LeapFrogVelvetCalculator implements StepCalculator {
+
+    private ForceCalculator forceCalculator;
+    private Double deltaT;
 
     public LeapFrogVelvetCalculator(ForceCalculator forceCalculator, Double deltaT) {
-        super(forceCalculator, deltaT);
+        this.forceCalculator = forceCalculator;
+        this.deltaT = deltaT;
     }
 
     @Override

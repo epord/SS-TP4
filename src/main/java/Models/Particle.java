@@ -1,4 +1,4 @@
-package OsciladorAmortiguado;
+package Models;
 
 import java.util.Objects;
 

@@ -1,9 +1,10 @@
-package OsciladorAmortiguado.StepCalculators;
+package CalculationMethods.Implementations;
 
-import OsciladorAmortiguado.ForceCalculators.ForceCalculator;
-import OsciladorAmortiguado.Particle;
-import OsciladorAmortiguado.StepCalculators.GearCalculatorUtils.DerivativeUtils;
-import OsciladorAmortiguado.Vector;
+import CalculationMethods.DerivativeUtils;
+import CalculationMethods.ForceCalculator;
+import CalculationMethods.StepCalculator;
+import Models.Particle;
+import Models.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,8 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GearCalculator extends StepCalculator {
+public class GearCalculator implements StepCalculator {
 
+    private ForceCalculator forceCalculator;
+    private Double deltaT;
     private HashMap<Particle, List<Vector>> derivativesMap = new HashMap<>();
     private DerivativeUtils derivativeUtils;
 
@@ -20,7 +23,8 @@ public class GearCalculator extends StepCalculator {
     private Double c0, c1, c2, c3, c4, c5;
 
     public GearCalculator(ForceCalculator forceCalculator, Double deltaT, DerivativeUtils derivativeUtils, Collection<Particle> particles) {
-        super(forceCalculator, deltaT);
+        this.forceCalculator = forceCalculator;
+        this.deltaT = deltaT;
         this.derivativeUtils = derivativeUtils;
         for (Particle p: particles) {
             derivativesMap.put(p, derivativeUtils.calculateDerivatives(p));

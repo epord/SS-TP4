@@ -1,18 +1,22 @@
-package OsciladorAmortiguado.StepCalculators;
+package CalculationMethods.Implementations;
 
-import OsciladorAmortiguado.ForceCalculators.ForceCalculator;
-import OsciladorAmortiguado.Particle;
-import OsciladorAmortiguado.Vector;
+import CalculationMethods.ForceCalculator;
+import CalculationMethods.StepCalculator;
+import Models.Particle;
+import Models.Vector;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BeemanCalculator extends StepCalculator {
+public class BeemanCalculator implements StepCalculator {
 
+    private ForceCalculator forceCalculator;
+    private Double deltaT;
     private List<Particle> previousState;
 
     public BeemanCalculator(ForceCalculator forceCalculator, Double deltaT, List<Particle> particles) {
-        super(forceCalculator, deltaT);
+        this.forceCalculator = forceCalculator;
+        this.deltaT = deltaT;
 
         // Calculate previous initial state with Euler
         previousState = particles.stream().map(p -> {

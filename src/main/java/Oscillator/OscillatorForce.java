@@ -23,9 +23,4 @@ public class OscillatorForce implements ForceCalculator {
         return p.getPosition().dot(-k).minus(p.getVelocity().dot(gamma));
     }
 
-    @Override
-    public Vector calculateAcceleration(Particle p, Collection<Particle> particles) {
-        return calculateForce(p, particles).dot(1/p.getMass());
-    }
-
 }

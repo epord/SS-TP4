@@ -3,10 +3,14 @@ import CalculationMethods.Implementations.GearCalculator;
 import CalculationMethods.Implementations.LeapFrogVelvetCalculator;
 import CalculationMethods.StepCalculator;
 import Oscillator.GearOscillatorUtils;
+import Oscillator.OscilatorMetrics;
 import Oscillator.OscillatorForce;
 import Oscillator.OscillatorSimulator;
 import Planets.PlanetsForce;
 import Planets.PlanetsSimulator;
+import experiments.ExperimentStatsHolder;
+import experiments.ExperimentsStatsAgregator;
+import experiments.Operation;
 import models.Particle;
 import models.Vector;
 
@@ -18,8 +22,8 @@ public class Main {
 
     public static void main(String[] args) {
         Long startTime = System.currentTimeMillis();
-//        runOscillatorSimulation();
-        runPlanetsSimulation();
+        runOscillatorSimulation();
+//        runPlanetsSimulation();
         System.out.println("Execution time: " + (System.currentTimeMillis() - startTime) / 1000.0 + " ms");
     }
 
@@ -35,7 +39,9 @@ public class Main {
         StepCalculator stepCalculator = new GearCalculator(new OscillatorForce(), deltaT, new GearOscillatorUtils(), Collections.singletonList(p));
 
         OscillatorSimulator oscillator = new OscillatorSimulator(deltaT, timeLimit, stepCalculator, p);
-        oscillator.start();
+        ExperimentsStatsAgregator<OscilatorMetrics> agregator = new ExperimentsStatsAgregator<>();
+        agregator.addStatsHolder(oscillator.start());
+        System.out.println(agregator.buildStatsOutput(Arrays.asList(Operation.MEAN)));
     }
 
 

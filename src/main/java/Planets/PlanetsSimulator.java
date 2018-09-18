@@ -11,6 +11,8 @@ public class PlanetsSimulator {
     private Double timeLimit;
     private StepCalculator stepCalculator;
     private List<Particle> particles;
+    private Double au2m = 149597870000.700;
+    int finalFrameCount = 1000;
 
     public PlanetsSimulator(Double deltaT, Double timeLimit, StepCalculator stepCalculator, List<Particle> particles) {
         this.deltaT = deltaT;
@@ -54,26 +56,12 @@ public class PlanetsSimulator {
 
         System.out.println("function solar()");
 
-        // Sun
-        int frame = 0;
-        int finalFrameCount = 1000;
-        Double au2m = 149597870000.700;
-        System.out.print("xsun=[");
-        for (Double x : xPos0)
-            if (frame++ % (xPos0.size() / finalFrameCount) == 0) {
-                System.out.print(x/au2m + " ");
-            }
-        System.out.println("];");
-        frame = 0;
-        System.out.print("ysun=[");
-        for (Double y: yPos0)
-            if (frame++ % (xPos0.size() / finalFrameCount) == 0) {
-                System.out.print(y/au2m + " ");
-            }
-        System.out.println("];");
+        StringBuilder sb = new StringBuilder();
+        sb.append(getPlanetPositions("xsun",xPos0));
+        sb.append(getPlanetPositions("ysun",yPos0));
 
         // Earth
-        frame = 0;
+        int frame = 0;
         System.out.print("xear=[");
         for (Double x : xPos1)
             if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
@@ -135,10 +123,22 @@ public class PlanetsSimulator {
                 System.out.print(y/au2m + " ");
             }
         System.out.println("];");
-
+        System.out.println(sb.toString());
         System.out.println("plot(xsun, ysun, 'x', 'color', 'r', xear, year, 'b', xjup, yjup, 'm', xsat, ysat, 'k', xvoy, yvoy, 'c')");
         System.out.println("axis([-10 10 -10 10])");
         System.out.println("axis square");
         System.out.println("endfunction");
+    }
+
+    String getPlanetPositions(String name, List<Double> values){
+        int frame = 0;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(name+"=[");
+        for (Double x : values)
+            if (frame++ % (values.size() / finalFrameCount) == 0) {
+                stringBuilder.append(x/au2m + " ");
+            }
+        stringBuilder.append("];\n");
+        return stringBuilder.toString();
     }
 }

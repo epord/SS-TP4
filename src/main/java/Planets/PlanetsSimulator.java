@@ -29,7 +29,11 @@ public class PlanetsSimulator {
         List<Double> yPos2 = new ArrayList<>();
         List<Double> xPos3 = new ArrayList<>();
         List<Double> yPos3 = new ArrayList<>();
+        List<Double> xPos4 = new ArrayList<>();
+        List<Double> yPos4 = new ArrayList<>();
+
         while(currentTime < timeLimit) {
+
             xPos0.add(particles.get(0).getPosition().getX());
             yPos0.add(particles.get(0).getPosition().getY());
             xPos1.add(particles.get(1).getPosition().getX());
@@ -38,6 +42,8 @@ public class PlanetsSimulator {
             yPos2.add(particles.get(2).getPosition().getY());
             xPos3.add(particles.get(3).getPosition().getX());
             yPos3.add(particles.get(3).getPosition().getY());
+            xPos4.add(particles.get(4).getPosition().getX());
+            yPos4.add(particles.get(4).getPosition().getY());
             particles = stepCalculator.updateParticles(particles);
             currentTime += deltaT;
         }
@@ -50,7 +56,7 @@ public class PlanetsSimulator {
 
         // Sun
         int frame = 0;
-        int finalFrameCount = 2000;
+        int finalFrameCount = 1000;
         Double au2m = 149597870000.700;
         System.out.print("xsun=[");
         for (Double x : xPos0)
@@ -114,7 +120,23 @@ public class PlanetsSimulator {
             }
         System.out.println("];");
 
-        System.out.println("plot(xsun, ysun, 'x', 'color', 'r', xear, year, 'b', xjup, yjup, 'm', xsat, ysat, 'k')");
+        // Voyager
+        frame = 0;
+        System.out.print("xvoy=[");
+        for (Double x : xPos4)
+            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
+                System.out.print(x/au2m + " ");
+            }
+        System.out.println("];");
+        frame = 0;
+        System.out.print("yvoy=[");
+        for (Double y: yPos4)
+            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
+                System.out.print(y/au2m + " ");
+            }
+        System.out.println("];");
+
+        System.out.println("plot(xsun, ysun, 'x', 'color', 'r', xear, year, 'b', xjup, yjup, 'm', xsat, ysat, 'k', xvoy, yvoy, 'c')");
         System.out.println("axis([-10 10 -10 10])");
         System.out.println("axis square");
         System.out.println("endfunction");

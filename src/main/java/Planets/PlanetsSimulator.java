@@ -1,7 +1,10 @@
 package Planets;
 
 import CalculationMethods.StepCalculator;
+import experiments.DataPoint;
+import experiments.ExperimentStatsHolder;
 import models.Particle;
+import models.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,122 +24,79 @@ public class PlanetsSimulator {
         this.particles = particles;
     }
 
-    public void start() {
+    public ExperimentStatsHolder<PlanetMetrics> start() {
+        ExperimentStatsHolder<PlanetMetrics> holder = new ExperimentStatsHolder<>();
         Double currentTime = 0.0;
-        List<Double> xPos0 = new ArrayList<>();
-        List<Double> yPos0 = new ArrayList<>();
-        List<Double> xPos1 = new ArrayList<>();
-        List<Double> yPos1 = new ArrayList<>();
-        List<Double> xPos2 = new ArrayList<>();
-        List<Double> yPos2 = new ArrayList<>();
-        List<Double> xPos3 = new ArrayList<>();
-        List<Double> yPos3 = new ArrayList<>();
-        List<Double> xPos4 = new ArrayList<>();
-        List<Double> yPos4 = new ArrayList<>();
 
+
+        Double jupiterClosestAproach = Double.MAX_VALUE;
+        Double saturnClosestAproach = Double.MAX_VALUE;
         while(currentTime < timeLimit) {
-
-            xPos0.add(particles.get(0).getPosition().getX());
-            yPos0.add(particles.get(0).getPosition().getY());
-            xPos1.add(particles.get(1).getPosition().getX());
-            yPos1.add(particles.get(1).getPosition().getY());
-            xPos2.add(particles.get(2).getPosition().getX());
-            yPos2.add(particles.get(2).getPosition().getY());
-            xPos3.add(particles.get(3).getPosition().getX());
-            yPos3.add(particles.get(3).getPosition().getY());
-            xPos4.add(particles.get(4).getPosition().getX());
-            yPos4.add(particles.get(4).getPosition().getY());
+            Vector sun = findById("sun").getPosition();
+            Vector voyager = findById("voyager").getPosition();
+            Vector jupiter = findById("jupiter").getPosition();
+            Vector saturn = findById("saturn").getPosition();
+            jupiterClosestAproach = getMin(jupiterClosestAproach, voyager.minus(jupiter).getNorm());
+            saturnClosestAproach = getMin(saturnClosestAproach, voyager.minus(saturn).getNorm());
+            holder.addDataPoint(PlanetMetrics.SUN_X,currentTime,sun.getX());
+            holder.addDataPoint(PlanetMetrics.SUN_Y,currentTime,sun.getY());
+            holder.addDataPoint(PlanetMetrics.EARTH_X,currentTime,findById("earth").getPosition().getX());
+            holder.addDataPoint(PlanetMetrics.EARTH_Y,currentTime,findById("earth").getPosition().getY());
+            holder.addDataPoint(PlanetMetrics.JUPITER_X,currentTime,jupiter.getX());
+            holder.addDataPoint(PlanetMetrics.JUPITER_Y,currentTime,jupiter.getY());
+            holder.addDataPoint(PlanetMetrics.SATURN_X,currentTime,saturn.getX());
+            holder.addDataPoint(PlanetMetrics.SATURN_Y,currentTime,saturn.getY());
+            holder.addDataPoint(PlanetMetrics.VOYAGER_X,currentTime,findById("voyager").getPosition().getX());
+            holder.addDataPoint(PlanetMetrics.VOYAGER_Y,currentTime,findById("voyager").getPosition().getY());
             particles = stepCalculator.updateParticles(particles);
             currentTime += deltaT;
         }
+        holder.addDataPoint(PlanetMetrics.SATURN_CLOSEST_APROACH,currentTime,saturnClosestAproach);
+        holder.addDataPoint(PlanetMetrics.JUPITER_CLOSEST_APROACH,currentTime,jupiterClosestAproach);
+        holder.addDataPoint(PlanetMetrics.TOTAL_CLOSED,currentTime,jupiterClosestAproach+saturnClosestAproach);
 
-
-
-        // Octave output
-
-        System.out.println("function solar()");
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(getPlanetPositions("xsun",xPos0));
-        sb.append(getPlanetPositions("ysun",yPos0));
-
-        // Earth
-        int frame = 0;
-        System.out.print("xear=[");
-        for (Double x : xPos1)
-            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(x/au2m + " ");
-            }
-        System.out.println("];");
-        frame = 0;
-        System.out.print("year=[");
-        for (Double y: yPos1)
-            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(y/au2m + " ");
-            }
-        System.out.println("];");
-
-        // Jupiter
-        frame = 0;
-        System.out.print("xjup=[");
-        for (Double x : xPos2)
-            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(x/au2m + " ");
-            }
-        System.out.println("];");
-        frame = 0;
-        System.out.print("yjup=[");
-        for (Double y: yPos2)
-            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(y/au2m + " ");
-            }
-        System.out.println("];");
-
-        // Saturn
-        frame = 0;
-        System.out.print("xsat=[");
-        for (Double x : xPos3)
-            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(x/au2m + " ");
-            }
-        System.out.println("];");
-        frame = 0;
-        System.out.print("ysat=[");
-        for (Double y: yPos3)
-            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(y/au2m + " ");
-            }
-        System.out.println("];");
-
-        // Voyager
-        frame = 0;
-        System.out.print("xvoy=[");
-        for (Double x : xPos4)
-            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(x/au2m + " ");
-            }
-        System.out.println("];");
-        frame = 0;
-        System.out.print("yvoy=[");
-        for (Double y: yPos4)
-            if (frame++ % (xPos1.size() / finalFrameCount) == 0) {
-                System.out.print(y/au2m + " ");
-            }
-        System.out.println("];");
-        System.out.println(sb.toString());
-        System.out.println("plot(xsun, ysun, 'x', 'color', 'r', xear, year, 'b', xjup, yjup, 'm', xsat, ysat, 'k', xvoy, yvoy, 'c')");
-        System.out.println("axis([-10 10 -10 10])");
-        System.out.println("axis square");
-        System.out.println("endfunction");
+//        System.out.println(getOctaveGrapher(holder));
+        return holder;
     }
 
-    String getPlanetPositions(String name, List<Double> values){
+    Particle findById(String id){
+        return particles.stream().filter(p->p.getID().equalsIgnoreCase(id)).findFirst().get();
+    }
+
+    Double getMin(Double prevMin, Double curr){
+        return prevMin < curr? prevMin : curr;
+    }
+
+    String getOctaveGrapher(ExperimentStatsHolder<PlanetMetrics> holder){
+        // Octave output
+        StringBuilder sb = new StringBuilder();
+        sb.append("function solar()\n");
+
+        sb.append(getPlanetPositions("xsun",holder.getDataSeries(PlanetMetrics.SUN_X)));
+        sb.append(getPlanetPositions("ysun",holder.getDataSeries(PlanetMetrics.SUN_Y)));
+        sb.append(getPlanetPositions("xear",holder.getDataSeries(PlanetMetrics.EARTH_X)));
+        sb.append(getPlanetPositions("year",holder.getDataSeries(PlanetMetrics.EARTH_Y)));
+        sb.append(getPlanetPositions("xjup",holder.getDataSeries(PlanetMetrics.JUPITER_X)));
+        sb.append(getPlanetPositions("yjup",holder.getDataSeries(PlanetMetrics.JUPITER_Y)));
+        sb.append(getPlanetPositions("xsat",holder.getDataSeries(PlanetMetrics.SATURN_X)));
+        sb.append(getPlanetPositions("ysat",holder.getDataSeries(PlanetMetrics.SATURN_Y)));
+        sb.append(getPlanetPositions("xvoy",holder.getDataSeries(PlanetMetrics.VOYAGER_X)));
+        sb.append(getPlanetPositions("yvoy",holder.getDataSeries(PlanetMetrics.VOYAGER_Y)));
+
+        sb.append("plot(xsun, ysun, 'x', 'color', 'r', xear, year, 'b', xjup, yjup, 'm', xsat, ysat, 'k', xvoy, yvoy, 'c')\n");
+        sb.append("axis([-10 10 -10 10])\n");
+        sb.append("axis square\n");
+        sb.append("endfunction\n");
+        return sb.toString();
+    }
+
+    String getPlanetPositions(String name, List<DataPoint> values){
         int frame = 0;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(name+"=[");
-        for (Double x : values)
+        for (DataPoint x : values)
             if (frame++ % (values.size() / finalFrameCount) == 0) {
-                stringBuilder.append(x/au2m + " ");
+                stringBuilder.append(x.getValue()/au2m + " ");
             }
         stringBuilder.append("];\n");
         return stringBuilder.toString();

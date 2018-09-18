@@ -48,9 +48,6 @@ public class Vector {
 
     @Override
     public String toString() {
-        return "Vector{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return "(x=" + x + ", y=" + y + ")";
     }
 }

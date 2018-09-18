@@ -3,13 +3,17 @@ package models;
 import java.util.Objects;
 
 public class Particle {
-    private Integer id;
+    private String id;
     private Vector position;
     private Vector velocity;
     private Vector acceleration;
     private Double mass;
 
     public Particle(Integer id, Vector position, Vector velocity, Vector acceleration, Double mass) {
+        this(id.toString(),position,velocity,acceleration,mass);
+    }
+
+    public Particle(String id, Vector position, Vector velocity, Vector acceleration, Double mass) {
         this.id =id;
         this.velocity = velocity;
         this.position = position;
@@ -46,7 +50,7 @@ public class Particle {
         return mass;
     }
 
-    public Integer getID() {
+    public String getID() {
         return id;
     }
 
@@ -61,5 +65,16 @@ public class Particle {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Particle{" +
+                "id='" + id + '\'' +
+                ", position=" + position +
+                ", velocity=" + velocity +
+                ", acceleration=" + acceleration +
+                ", mass=" + mass +
+                '}';
     }
 }

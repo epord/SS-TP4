@@ -1,14 +1,13 @@
-import CalculationMethods.Implementations.BeemanCalculator;
 import CalculationMethods.Implementations.GearCalculator;
 import CalculationMethods.Implementations.LeapFrogVelvetCalculator;
 import CalculationMethods.StepCalculator;
-import Models.Particle;
-import Models.Vector;
+import models.Particle;
 import Oscillator.GearOscillatorUtils;
 import Oscillator.OscillatorForce;
 import Oscillator.OscillatorSimulator;
 import Planets.PlanetsForce;
 import Planets.PlanetsSimulator;
+import models.Vector;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,8 +15,8 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-//        runOscillatorSimulation();
-        runPlanetsSimulation();
+        runOscillatorSimulation();
+//        runPlanetsSimulation();
     }
 
     private static void runOscillatorSimulation() {

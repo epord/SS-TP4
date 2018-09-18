@@ -1,7 +1,7 @@
 package Oscillator;
 
-import Models.Particle;
-import Models.Vector;
+import models.Particle;
+import models.Vector;
 import CalculationMethods.DerivativeUtils;
 
 import java.util.Arrays;

@@ -2,8 +2,8 @@ package CalculationMethods.Implementations;
 
 import CalculationMethods.ForceCalculator;
 import CalculationMethods.StepCalculator;
-import Models.Particle;
-import Models.Vector;
+import models.Particle;
+import models.Vector;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package Oscillator;
 
-import Models.Particle;
+import models.Particle;
 import CalculationMethods.StepCalculator;
 
 import java.util.ArrayList;

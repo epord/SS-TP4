@@ -1,7 +1,7 @@
 package Planets;
 
 import CalculationMethods.StepCalculator;
-import Models.Particle;
+import models.Particle;
 
 import java.util.ArrayList;
 import java.util.List;

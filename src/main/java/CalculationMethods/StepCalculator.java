@@ -1,6 +1,6 @@
 package CalculationMethods;
 
-import Models.Particle;
+import models.Particle;
 
 import java.util.List;
 

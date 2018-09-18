@@ -1,4 +1,4 @@
-package Models;
+package models;
 
 import java.util.Objects;
 
@@ -16,6 +16,7 @@ public class Particle {
         this.acceleration = acceleration;
         this.mass = mass;
     }
+
 
     public Particle getCopyWithPosition(Vector newPosition) {
         return new Particle(id, newPosition, velocity, acceleration, mass);

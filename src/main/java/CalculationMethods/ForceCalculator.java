@@ -1,7 +1,7 @@
 package CalculationMethods;
 
-import Models.Particle;
-import Models.Vector;
+import models.Particle;
+import models.Vector;
 
 import java.util.Collection;
 

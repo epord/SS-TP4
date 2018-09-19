@@ -47,8 +47,10 @@ public class Main {
 
 
     private static void runPlanetsSimulation() {
-        PlanetSimulatorSuite planetSimulatorSuite = new PlanetSimulatorSuite(0.05,0.05);
-        planetSimulatorSuite.run();
+//        PlanetSimulatorSuite planetSimulatorSuite = new PlanetSimulatorSuite(0.2,0.01);
+        PlanetSimulatorSuite planetSimulatorSuite =
+                new PlanetSimulatorSuite(1.0,1.0,0.2,0.4,0.6,0.02);
+        planetSimulatorSuite.run(10);
     }
 
 

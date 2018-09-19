@@ -48,8 +48,12 @@ public class Main {
 
     private static void runPlanetsSimulation() {
 //        PlanetSimulatorSuite planetSimulatorSuite = new PlanetSimulatorSuite(0.2,0.01);
+        //Run a suite of tests to determine the best configuration. It will iterate from start to end,
+        //incrementing every time by the step. If start = end, only that value will be tested.
+        //It will test every speed with every height, so be careful with the steps
         PlanetSimulatorSuite planetSimulatorSuite =
                 new PlanetSimulatorSuite(1.0,1.0,0.2,0.4,0.6,0.02);
+        //Set the max suboptimal trayectories to draw
         planetSimulatorSuite.run(10);
     }
 

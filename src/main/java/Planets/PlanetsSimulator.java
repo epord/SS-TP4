@@ -38,6 +38,7 @@ public class PlanetsSimulator {
             Vector voyager = findById("voyager").getPosition();
             Vector jupiter = findById("jupiter").getPosition();
             Vector saturn = findById("saturn").getPosition();
+            //This is suposed to be like that?
             jupiterClosestAproach = getMin(jupiterClosestAproach, new DataPoint(currentTime,voyager.minus(jupiter).getNorm()));
             saturnClosestAproach = getMin(saturnClosestAproach, new DataPoint(currentTime,voyager.minus(saturn).getNorm()));
             holder.addDataPoint(PlanetMetrics.SUN_X,currentTime,sun.getX());

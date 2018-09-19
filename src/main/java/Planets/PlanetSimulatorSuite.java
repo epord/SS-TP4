@@ -57,17 +57,19 @@ public class PlanetSimulatorSuite {
         ExperimentStatsHolder<PlanetMetrics> suiteHolder = new ExperimentStatsHolder<>();
         StepCalculator stepCalculator = new LeapFrogVelvetCalculator(new PlanetsForce(), deltaT);
 //        StepCalculator stepCalculator = new BeemanCalculator(new PlanetsForce(), deltaT, particles);
-//        String closestJourney = "Null Journey, Error";
+
         Double closestDistance = Double.MAX_VALUE;
         ExperimentStatsHolder<PlanetMetrics> bestTrayectory = new ExperimentStatsHolder<>();
         OctaveBuilder octaveBuilder = new OctaveBuilder();
         String statusString = "no status";
         Integer closestIndex = -1;
+        //List to save the other trayectories, first X and then Y
         List<Pair<List<Double>,List<Double>>> otherTrajectories = new ArrayList<>();
 
         for (Double speed = startSpeed; speed <= endSpeed; speed += speedStep) {
             for(Double height = startHeight; height <= endHeight; height += heightStep){
                 System.out.println(getStatusString(height,speed));
+                //Get the correct start configuration for the start parameters
                 List<Particle> particles = getStartConfiguration(height,speed);
                 PlanetsSimulator planetsSimulator = new PlanetsSimulator(deltaT, timeLimit, stepCalculator, particles);
                 ExperimentStatsHolder<PlanetMetrics> singleHolder = planetsSimulator.start();
@@ -76,6 +78,7 @@ public class PlanetSimulatorSuite {
                 DataPoint jupiterClosestAproach = singleHolder.getDataSeries(PlanetMetrics.JUPITER_CLOSEST_APROACH).get(0);
                 Double totalDistance = singleHolder.getDataSeries(PlanetMetrics.TOTAL_CLOSED).get(0).getValue();
 
+                //Add the trayectories as an extra, if there is room for other trayectories
                 if(otherTrajectories.size() < maxOtherTrayectories ){
                     otherTrajectories.add(new Pair<>(singleHolder.getDataSeries(PlanetMetrics.VOYAGER_X)
                             .stream().map(DataPoint::getValue).collect(Collectors.toList()),

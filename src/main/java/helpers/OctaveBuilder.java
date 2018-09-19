@@ -16,11 +16,13 @@ public class OctaveBuilder {
 
     private Double au2m = 149597870000.700;
     int finalFrameCount = 1000;
+    int precision = 8;
 
     public OctaveBuilder() {
     }
 
-    public OctaveBuilder(int finalFrameCount) {
+    public OctaveBuilder(int finalFrameCount, int precision) {
+        this.precision = precision;
         this.finalFrameCount = finalFrameCount;
     }
 
@@ -69,7 +71,7 @@ public class OctaveBuilder {
         stringBuilder.append(name+"=[");
         for (Double x : values)
             if (frame++ % (values.size() / finalFrameCount) == 0) {
-                stringBuilder.append(x/au2m + " ");
+                stringBuilder.append(String.format("%."+precision+"f ",x/au2m));
             }
         stringBuilder.append("];\n");
         return stringBuilder.toString();

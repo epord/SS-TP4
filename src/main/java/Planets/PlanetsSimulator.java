@@ -54,7 +54,8 @@ public class PlanetsSimulator {
         holder.addDataPoint(PlanetMetrics.SATURN_CLOSEST_APROACH,saturnClosestAproach.getTime(),saturnClosestAproach.getValue());
         holder.addDataPoint(PlanetMetrics.JUPITER_CLOSEST_APROACH,jupiterClosestAproach.getTime(),jupiterClosestAproach.getValue());
 
-        Double totalDistanceToMinimize = Math.sqrt(Math.pow(jupiterClosestAproach.getValue(),2)+Math.pow(saturnClosestAproach.getValue(),2));
+        Double totalDistanceToMinimize = jupiterClosestAproach.getValue() + saturnClosestAproach.getValue();
+//        Double totalDistanceToMinimize = Math.sqrt(Math.pow(jupiterClosestAproach.getValue(),2)+Math.pow(saturnClosestAproach.getValue(),2));
         holder.addDataPoint(PlanetMetrics.TOTAL_CLOSED,currentTime, totalDistanceToMinimize);
 
         return holder;

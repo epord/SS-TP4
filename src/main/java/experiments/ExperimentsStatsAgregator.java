@@ -1,9 +1,6 @@
 package experiments;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -18,6 +15,10 @@ public class ExperimentsStatsAgregator<K extends Enum> {
 
     public void addStatsHolder(ExperimentStatsHolder<K> experimentStatsHolder){
         holders.add(experimentStatsHolder);
+    }
+
+    public StringBuilder buildStatsOutput(Operation... operations){
+        return buildStatsOutput(Arrays.asList(operations));
     }
 
     public StringBuilder buildStatsOutput(List<Operation> operations){
@@ -95,5 +96,11 @@ public class ExperimentsStatsAgregator<K extends Enum> {
             min = min < timeserie.size()?min:timeserie.size();
         }
         return min;
+    }
+
+    public static <U extends Enum> ExperimentsStatsAgregator<U> getFromHolders(ExperimentStatsHolder<U>... holders){
+        ExperimentsStatsAgregator<U> agregator = new ExperimentsStatsAgregator<>();
+        Arrays.stream(holders).forEach(agregator::addStatsHolder);
+        return agregator;
     }
 }

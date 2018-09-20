@@ -30,34 +30,32 @@ public class PlanetsSimulator {
         ExperimentStatsHolder<PlanetMetrics> holder = new ExperimentStatsHolder<>();
         Double currentTime = 0.0;
 
-
         DataPoint jupiterClosestAproach = new DataPoint(0.0,Double.MAX_VALUE);
         DataPoint saturnClosestAproach = new DataPoint(0.0,Double.MAX_VALUE);
         while(currentTime < timeLimit) {
-            Vector sun = findById("sun").getPosition();
             Vector voyager = findById("voyager").getPosition();
             Vector jupiter = findById("jupiter").getPosition();
             Vector saturn = findById("saturn").getPosition();
-            //This is suposed to be like that?
-            jupiterClosestAproach = getMin(jupiterClosestAproach, new DataPoint(currentTime,voyager.minus(jupiter).getNorm()));
-            saturnClosestAproach = getMin(saturnClosestAproach, new DataPoint(currentTime,voyager.minus(saturn).getNorm()));
-            holder.addDataPoint(PlanetMetrics.SUN_X,currentTime,sun.getX());
-            holder.addDataPoint(PlanetMetrics.SUN_Y,currentTime,sun.getY());
-            holder.addDataPoint(PlanetMetrics.EARTH_X,currentTime,findById("earth").getPosition().getX());
-            holder.addDataPoint(PlanetMetrics.EARTH_Y,currentTime,findById("earth").getPosition().getY());
-            holder.addDataPoint(PlanetMetrics.JUPITER_X,currentTime,jupiter.getX());
-            holder.addDataPoint(PlanetMetrics.JUPITER_Y,currentTime,jupiter.getY());
-            holder.addDataPoint(PlanetMetrics.SATURN_X,currentTime,saturn.getX());
-            holder.addDataPoint(PlanetMetrics.SATURN_Y,currentTime,saturn.getY());
-            holder.addDataPoint(PlanetMetrics.VOYAGER_X,currentTime,findById("voyager").getPosition().getX());
-            holder.addDataPoint(PlanetMetrics.VOYAGER_Y,currentTime,findById("voyager").getPosition().getY());
+            //Get the current distance from voyager to jupiter/saturn
+            DataPoint jupiterDistance = new DataPoint(currentTime,voyager.minus(jupiter).getNorm());
+            DataPoint saturnDistance = new DataPoint(currentTime,voyager.minus(saturn).getNorm());
+            //Add it to the metrics
+            holder.addDataPoint(PlanetMetrics.SATURN_DISTANCE,currentTime,saturnDistance.getValue());
+            holder.addDataPoint(PlanetMetrics.JUPITER_DISTANCE,currentTime,jupiterDistance.getValue());
+            //See if it is the closest, and save it if it is
+            jupiterClosestAproach = getMin(jupiterClosestAproach, jupiterDistance);
+            saturnClosestAproach = getMin(saturnClosestAproach, saturnDistance);
+
+            fillHolderWithPlanetPositions(holder,currentTime);
             particles = stepCalculator.updateParticles(particles);
             currentTime += deltaT;
         }
+        //Add the closest distance to the holder
         holder.addDataPoint(PlanetMetrics.SATURN_CLOSEST_APROACH,saturnClosestAproach.getTime(),saturnClosestAproach.getValue());
         holder.addDataPoint(PlanetMetrics.JUPITER_CLOSEST_APROACH,jupiterClosestAproach.getTime(),jupiterClosestAproach.getValue());
-        holder.addDataPoint(PlanetMetrics.TOTAL_CLOSED,currentTime,
-                Math.sqrt(jupiterClosestAproach.getValue()*jupiterClosestAproach.getValue()+saturnClosestAproach.getValue()*saturnClosestAproach.getValue()));
+
+        Double totalDistanceToMinimize = Math.sqrt(Math.pow(jupiterClosestAproach.getValue(),2)+Math.pow(saturnClosestAproach.getValue(),2));
+        holder.addDataPoint(PlanetMetrics.TOTAL_CLOSED,currentTime, totalDistanceToMinimize);
 
         return holder;
     }
@@ -70,4 +68,16 @@ public class PlanetsSimulator {
         return prevMin.getValue() < curr.getValue()? prevMin : curr;
     }
 
+    private void fillHolderWithPlanetPositions(ExperimentStatsHolder<PlanetMetrics> holder, Double currentTime){
+        holder.addDataPoint(PlanetMetrics.SUN_X,currentTime,findById("sun").getPosition().getX());
+        holder.addDataPoint(PlanetMetrics.SUN_Y,currentTime,findById("sun").getPosition().getY());
+        holder.addDataPoint(PlanetMetrics.EARTH_X,currentTime,findById("earth").getPosition().getX());
+        holder.addDataPoint(PlanetMetrics.EARTH_Y,currentTime,findById("earth").getPosition().getY());
+        holder.addDataPoint(PlanetMetrics.JUPITER_X,currentTime,findById("jupiter").getPosition().getX());
+        holder.addDataPoint(PlanetMetrics.JUPITER_Y,currentTime,findById("jupiter").getPosition().getY());
+        holder.addDataPoint(PlanetMetrics.SATURN_X,currentTime,findById("saturn").getPosition().getX());
+        holder.addDataPoint(PlanetMetrics.SATURN_Y,currentTime,findById("saturn").getPosition().getY());
+        holder.addDataPoint(PlanetMetrics.VOYAGER_X,currentTime,findById("voyager").getPosition().getX());
+        holder.addDataPoint(PlanetMetrics.VOYAGER_Y,currentTime,findById("voyager").getPosition().getY());
+    }
 }

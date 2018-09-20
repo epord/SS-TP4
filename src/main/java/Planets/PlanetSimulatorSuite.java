@@ -7,6 +7,7 @@ import experiments.DataPoint;
 import experiments.ExperimentStatsHolder;
 import experiments.ExperimentsStatsAgregator;
 import experiments.Operation;
+import helpers.FileManager;
 import helpers.OctaveBuilder;
 import javafx.util.Pair;
 import models.Particle;
@@ -80,10 +81,7 @@ public class PlanetSimulatorSuite {
 
                 //Add the trayectories as an extra, if there is room for other trayectories
                 if(otherTrajectories.size() < maxOtherTrayectories ){
-                    otherTrajectories.add(new Pair<>(singleHolder.getDataSeries(PlanetMetrics.VOYAGER_X)
-                            .stream().map(DataPoint::getValue).collect(Collectors.toList()),
-                            singleHolder.getDataSeries(PlanetMetrics.VOYAGER_Y)
-                                    .stream().map(DataPoint::getValue).collect(Collectors.toList())));
+                    otherTrajectories.add(getVoyagerTrayectory(singleHolder));
                 }
                 if(closestDistance > totalDistance){
                     closestDistance = totalDistance;
@@ -109,7 +107,18 @@ public class PlanetSimulatorSuite {
         for (PlanetMetrics pm : suiteHolder.getActiveSeries()){
             System.out.println(pm + " = " + suiteHolder.getDataSeries(pm).get(closestIndex).getValue());
         }
+//        FileManager.writeString("out.csv",ExperimentsStatsAgregator.getFromHolders(bestTrayectory).buildStatsOutput(Operation.MEAN).toString());
+        System.out.println("Octave Graph");
+        FileManager.writeString("ss4.m",octaveBuilder.getOctaveGrapher(bestTrayectory,otherTrajectories));
+        System.out.println("Saving the octave grapher function in ss4.m");
         System.out.println(octaveBuilder.getOctaveGrapher(bestTrayectory,otherTrajectories));
+    }
+
+    private Pair<List<Double>,List<Double>> getVoyagerTrayectory(ExperimentStatsHolder<PlanetMetrics> holder){
+        return new Pair<>(holder.getDataSeries(PlanetMetrics.VOYAGER_X)
+                .stream().map(DataPoint::getValue).collect(Collectors.toList()),
+                holder.getDataSeries(PlanetMetrics.VOYAGER_Y)
+                        .stream().map(DataPoint::getValue).collect(Collectors.toList()));
     }
 
     private String getStatusString(Double height, Double speed){
@@ -138,7 +147,6 @@ public class PlanetSimulatorSuite {
                 new Vector(-3.778021070773957E-03 * aupd2mps, -4.383919949255058E-03 * aupd2mps),
                 new Vector(0.0, 0.0),
                 5.6834E26);
-
 
         Double voyagerSpeed = voyagerSpeedPercentage * maxVoyagerSpeed;
         Double voyageHeight = voyagerHeightPercentage * maxVoyagerPosition;

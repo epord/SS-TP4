@@ -7,6 +7,7 @@ import experiments.DataPoint;
 import experiments.ExperimentStatsHolder;
 import experiments.ExperimentsStatsAgregator;
 import experiments.Operation;
+import helpers.AnimationBuilder;
 import helpers.FileManager;
 import helpers.OctaveBuilder;
 import javafx.util.Pair;
@@ -62,6 +63,7 @@ public class PlanetSimulatorSuite {
         Double closestDistance = Double.MAX_VALUE;
         ExperimentStatsHolder<PlanetMetrics> bestTrayectory = new ExperimentStatsHolder<>();
         OctaveBuilder octaveBuilder = new OctaveBuilder();
+        AnimationBuilder animationBuilder = new AnimationBuilder();
         String statusString = "no status";
         Integer closestIndex = -1;
         //List to save the other trayectories, first X and then Y
@@ -110,8 +112,10 @@ public class PlanetSimulatorSuite {
 //        FileManager.writeString("out.csv",ExperimentsStatsAgregator.getFromHolders(bestTrayectory).buildStatsOutput(Operation.MEAN).toString());
         System.out.println("Octave Graph");
         FileManager.writeString("ss4.m",octaveBuilder.getOctaveGrapher(bestTrayectory,otherTrajectories));
+        FileManager.writeString("p5/empty-example/output.txt",animationBuilder.getAnimationOutput(bestTrayectory,otherTrajectories));
         System.out.println("Saving the octave grapher function in ss4.m");
         System.out.println(octaveBuilder.getOctaveGrapher(bestTrayectory,otherTrajectories));
+//        System.out.println(animationBuilder.getAnimationOutput(bestTrayectory,otherTrajectories));
     }
 
     private Pair<List<Double>,List<Double>> getVoyagerTrayectory(ExperimentStatsHolder<PlanetMetrics> holder){

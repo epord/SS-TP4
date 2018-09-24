@@ -34,7 +34,7 @@ public class Vector {
     }
 
     public Double distance (Vector v) {
-        return Math.sqrt(Math.pow(x + v.x, 2) + Math.pow(y + v.y, 2));
+        return Math.sqrt(Math.pow(x - v.x, 2) + Math.pow(y - v.y, 2));
     }
 
     public Double getNorm() {

@@ -27,7 +27,7 @@ public class PlanetSimulatorSuite {
     Double aupd2mps = au2m / day2s;         // au/day to m/s
 
     Double deltaT = day2s / 24.0;
-    Double timeLimit = 5.0 * (365.0 * day2s);
+    Double timeLimit = 15.0 * (365.0 * day2s);
 
     Double maxVoyagerPosition = 10000000.0; // m
     Double maxVoyagerSpeed = 20000.0; // m/s

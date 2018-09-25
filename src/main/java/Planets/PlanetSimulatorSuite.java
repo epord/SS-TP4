@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PlanetSimulatorSuite {
     Double au2m = 149597870700.0;         // astronomical units to meters
@@ -72,35 +73,38 @@ public class PlanetSimulatorSuite {
 
         for (Double speed = startSpeed; speed <= endSpeed; speed += speedStep) {
             for(Double height = startHeight; height <= endHeight; height += heightStep){
-                System.out.println(getStatusString(height,speed));
-                //Get the correct start configuration for the start parameters
-                List<Particle> particles = getStartConfiguration(height,speed);
-                PlanetsSimulator planetsSimulator = new PlanetsSimulator(deltaT, timeLimit, stepCalculator, particles);
-                ExperimentStatsHolder<PlanetMetrics> singleHolder = planetsSimulator.start();
-                //Extract the results from the single experiment holder
-                DataPoint saturnClosestAproach = singleHolder.getDataSeries(PlanetMetrics.SATURN_CLOSEST_APROACH).get(0);
-                DataPoint jupiterClosestAproach = singleHolder.getDataSeries(PlanetMetrics.JUPITER_CLOSEST_APROACH).get(0);
-                Double totalDistance = singleHolder.getDataSeries(PlanetMetrics.TOTAL_CLOSED).get(0).getValue();
+//                for(Double days = -500.0; days <= 500.0; days += 50.0){
+                for(Double days = 0.0; days <= 0.0; days += 50.0){
+                    System.out.println(getStatusString(height,speed,days));
+                    //Get the correct start configuration for the start parameters
+                    List<Particle> particles = getConfigurationEvolved(height,speed,day2s*days);
+                    PlanetsSimulator planetsSimulator = new PlanetsSimulator(deltaT, timeLimit, stepCalculator, particles);
+                    ExperimentStatsHolder<PlanetMetrics> singleHolder = planetsSimulator.start();
+                    //Extract the results from the single experiment holder
+                    DataPoint saturnClosestAproach = singleHolder.getDataSeries(PlanetMetrics.SATURN_CLOSEST_APROACH).get(0);
+                    DataPoint jupiterClosestAproach = singleHolder.getDataSeries(PlanetMetrics.JUPITER_CLOSEST_APROACH).get(0);
+                    Double totalDistance = singleHolder.getDataSeries(PlanetMetrics.TOTAL_CLOSED).get(0).getValue();
 
-                //Add the trayectories as an extra, if there is room for other trayectories
-                if(otherTrajectories.size() < maxOtherTrayectories ){
-                    otherTrajectories.add(getVoyagerTrayectory(singleHolder));
+                    //Add the trayectories as an extra, if there is room for other trayectories
+                    if(otherTrajectories.size() < maxOtherTrayectories ){
+                        otherTrajectories.add(getVoyagerTrayectory(singleHolder));
+                    }
+                    if(closestDistance > totalDistance){
+                        closestDistance = totalDistance;
+                        statusString = getStatusString(height,speed,days);
+                        //This is to get the index of the best configuration
+                        closestIndex = suiteHolder.getDataSeries(PlanetMetrics.SATURN_CLOSEST_APROACH).size();
+                        bestTrayectory = singleHolder;
+                    }
+                    //Add those results to the experiment suite holder
+                    suiteHolder.addDataPoint(PlanetMetrics.SATURN_CLOSEST_APROACH,0.0,saturnClosestAproach.getValue());
+                    suiteHolder.addDataPoint(PlanetMetrics.SATURN_CLOSEST_APROACH_TIME,0.0,saturnClosestAproach.getTime()    );
+                    suiteHolder.addDataPoint(PlanetMetrics.JUPITER_CLOSEST_APROACH,0.0,jupiterClosestAproach.getValue());
+                    suiteHolder.addDataPoint(PlanetMetrics.JUPITER_CLOSEST_APROACH_TIME,0.0,jupiterClosestAproach.getTime());
+                    suiteHolder.addDataPoint(PlanetMetrics.TOTAL_CLOSED,0.0,totalDistance);
+                    suiteHolder.addDataPoint(PlanetMetrics.VOYAGER_HEIGHT,0.0,height);
+                    suiteHolder.addDataPoint(PlanetMetrics.VOYAGER_SPEED,0.0,speed);
                 }
-                if(closestDistance > totalDistance){
-                    closestDistance = totalDistance;
-                    statusString = getStatusString(height,speed);
-                    //This is to get the index of the best configuration
-                    closestIndex = suiteHolder.getDataSeries(PlanetMetrics.SATURN_CLOSEST_APROACH).size();
-                    bestTrayectory = singleHolder;
-                }
-                //Add those results to the experiment suite holder
-                suiteHolder.addDataPoint(PlanetMetrics.SATURN_CLOSEST_APROACH,0.0,saturnClosestAproach.getValue());
-                suiteHolder.addDataPoint(PlanetMetrics.SATURN_CLOSEST_APROACH_TIME,0.0,saturnClosestAproach.getTime()    );
-                suiteHolder.addDataPoint(PlanetMetrics.JUPITER_CLOSEST_APROACH,0.0,jupiterClosestAproach.getValue());
-                suiteHolder.addDataPoint(PlanetMetrics.JUPITER_CLOSEST_APROACH_TIME,0.0,jupiterClosestAproach.getTime());
-                suiteHolder.addDataPoint(PlanetMetrics.TOTAL_CLOSED,0.0,totalDistance);
-                suiteHolder.addDataPoint(PlanetMetrics.VOYAGER_HEIGHT,0.0,height);
-                suiteHolder.addDataPoint(PlanetMetrics.VOYAGER_SPEED,0.0,speed);
             }
         }
         agregator.addStatsHolder(suiteHolder);
@@ -112,7 +116,7 @@ public class PlanetSimulatorSuite {
         for (PlanetMetrics pm : suiteHolder.getActiveSeries()){
             System.out.println(pm + " = " + suiteHolder.getDataSeries(pm).get(closestIndex).getValue());
         }
-        FileManager.writeString("out.csv",ExperimentsStatsAgregator.getFromHolders  (bestTrayectory).buildStatsOutput(Operation.MEAN).toString());
+        FileManager.writeString("out.csv",ExperimentsStatsAgregator.getFromHolders(bestTrayectory).buildStatsOutput(Operation.MEAN).toString());
         System.out.println("Octave Graph");
         FileManager.writeString("ss4.m",octaveBuilder.getOctaveGrapher(bestTrayectory,otherTrajectories));
         FileManager.writeString("p5/empty-example/output.txt",animationBuilder.getAnimationOutput(bestTrayectory,otherTrajectories));
@@ -128,12 +132,20 @@ public class PlanetSimulatorSuite {
                         .stream().map(DataPoint::getValue).collect(Collectors.toList()));
     }
 
-    private String getStatusString(Double height, Double speed){
+    private String getStatusString(Double height, Double speed, Double zeroTime){
         return  "Height = "+ height +"*"+ maxVoyagerPosition +" = "+height*maxVoyagerPosition +
-                " meters \nSpeed = " + speed +"*"+maxVoyagerSpeed + " = " +speed*maxVoyagerSpeed + "m/s";
+                " meters \nSpeed = " + speed +"*"+maxVoyagerSpeed + " = " +speed*maxVoyagerSpeed + "m/s" +
+                "\nStart day = " + zeroTime +" days";
     }
 
-    private List<Particle> getStartConfiguration(Double voyagerHeightPercentage, Double voyagerSpeedPercentage){
+    private List<Particle> getConfigurationEvolved(Double voyagerHeightPercentage, Double voyagerSpeedPercentage, Double zeroTIme){
+        List<Particle> bodies = getSolarSystemConfiguration(zeroTIme);
+        Particle earth = findById("earth",bodies);
+        bodies.add(getVoyager(earth,voyagerSpeedPercentage,voyagerHeightPercentage));
+        return bodies;
+    }
+
+    private List<Particle> getSolarSystemConfiguration(Double zeroTime) {
         Particle sun = new Particle("sun",
                 new Vector(0.0, 0.0),
                 new Vector(0.0, 0.0),
@@ -155,6 +167,27 @@ public class PlanetSimulatorSuite {
                 new Vector(0.0, 0.0),
                 5.6834E26);
 
+        List<Particle> bodies = Stream.of(sun,earth,jupiter,saturn).collect(Collectors.toList());
+        if(zeroTime != 0){
+            StepCalculator stepCalculator = new LeapFrogVelvetCalculator(new PlanetsForce(),(zeroTime<0?-1:1)*deltaT);
+            Double currentTime = 0.0;
+            while (Math.abs(currentTime) < Math.abs(zeroTime) ){
+                bodies = stepCalculator.updateParticles(bodies);
+                currentTime += (zeroTime<0?-1:1)*deltaT;
+            }
+        }
+
+        return bodies;
+    }
+    private List<Particle> getStartConfiguration(Double voyagerHeightPercentage, Double voyagerSpeedPercentage){
+        List<Particle> bodies = getSolarSystemConfiguration(0.0);
+        Particle earth = findById("earth",bodies);
+        bodies.add(getVoyager(earth,voyagerSpeedPercentage,voyagerHeightPercentage));
+//        System.out.println("h: "+ voyagerHeightPercentage + ",s:" + voyagerSpeedPercentage + "||"+ voyager);
+        return bodies;
+    }
+
+    Particle getVoyager(Particle earth, Double voyagerSpeedPercentage, Double voyagerHeightPercentage){
         Double voyagerSpeed = voyagerSpeedPercentage * maxVoyagerSpeed;
         Double voyageHeight = voyagerHeightPercentage * maxVoyagerPosition;
         Vector voyagerPosition = earth.getPosition().normalize().dot(earth.getPosition().getNorm() + earthRadius + voyageHeight);
@@ -165,8 +198,10 @@ public class PlanetSimulatorSuite {
                 voyagerVelocity,
                 new Vector(0.0, 0.0),
                 721.9);
+        return voyager;
+    }
 
-//        System.out.println("h: "+ voyagerHeightPercentage + ",s:" + voyagerSpeedPercentage + "||"+ voyager);
-        return Arrays.asList(sun, earth, jupiter, saturn, voyager);
+    Particle findById(String id, List<Particle> particles){
+        return particles.stream().filter(p->p.getID().equalsIgnoreCase(id)).findFirst().get();
     }
 }

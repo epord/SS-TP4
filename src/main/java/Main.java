@@ -13,6 +13,7 @@ import experiments.ExperimentStatsHolder;
 import experiments.ExperimentsStatsAgregator;
 import experiments.Operation;
 import helpers.FileManager;
+import javafx.util.Pair;
 import models.Particle;
 import models.Vector;
 
@@ -27,7 +28,8 @@ public class Main {
         Long startTime = System.currentTimeMillis();
 //        runOscillatorSimulation();
         runPlanetsSimulation();
-        System.out.println("Execution time: " + (System.currentTimeMillis() - startTime) / 1000.0 + " ms");
+//        findNextSimilarPlanetDisposition();
+        System.out.println("Execution time: " + (System.currentTimeMillis() - startTime) / 1000.0 + " s");
     }
 
     private static void runOscillatorSimulation() {
@@ -122,12 +124,27 @@ public class Main {
 //                new PlanetSimulatorSuite(0.5,0.5,0.1,0.6,0.8,0.02);
 //                new PlanetSimulatorSuite(0.5,0.5,0.02,0.779,0.781,0.0002);
 //                new PlanetSimulatorSuite(0.5,0.5,0.02,0.7797,0.7799,0.00002);
-                new PlanetSimulatorSuite(0.5,0.5,0.02,0.77974,0.77974,0.00002);
+                new PlanetSimulatorSuite(1.0,1.0,0.02,0.576436,0.576436,0.00002);
 //                new PlanetSimulatorSuite(0.499,0.501,0.0002,0.7797,0.7797,0.00002);
 //                new PlanetSimulatorSuite(0.562189,1.1,1.1,0.773,0.8,0.1);
 //                new PlanetSimulatorSuite(0.0,1.0,0.2,0.70,0.90,0.01);
         //Set the max suboptimal trayectories to draw
         planetSimulatorSuite.run(10);
+    }
+
+    private static void findNextSimilarPlanetDisposition() {
+        PlanetSimulatorSuite planetSimulatorSuite =
+                new PlanetSimulatorSuite(1.0,0.5,0.02,0.576436,0.576436,0.00002);
+
+        Double day2s = 24.0 * 60.0 * 60.0;
+        Double year2s = 365.0 * day2s;
+        Double endingTime = 25.0 * year2s;
+        Pair<Double, List<Particle>> similarDisposition = planetSimulatorSuite.findNextSimilarPlanetDisposition(endingTime);
+        System.out.println("Days: " + similarDisposition.getKey()/day2s);
+        System.out.println(similarDisposition.getValue().get(1).getPosition());
+        System.out.println(similarDisposition.getValue().get(2).getPosition());
+        System.out.println(similarDisposition.getValue().get(3).getPosition());
+
     }
 
     private static void runWithSearch(){

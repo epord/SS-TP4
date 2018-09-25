@@ -51,11 +51,25 @@ function draw() {
     ellipse(world2canvas(0), world2canvas(0), 2 * 5.228/world_size * canvas_size);
     ellipse(world2canvas(0), world2canvas(0), 2 * 9.553/world_size * canvas_size);
 
+    noStroke();
     drawPlanet(sun_positions[current_frame], {r: 232, g: 63, b: 25}, 10);
     drawPlanet(earth_positions[current_frame], {r: 50, g: 150, b: 230}, 10);
     drawPlanet(jupiter_positions[current_frame], {r: 219, g: 113, b: 52}, 10);
     drawPlanet(saturn_positions[current_frame], {r: 209, g: 149, b: 29}, 10);
     drawPlanet(voyager_positions[current_frame], {r: 210, g: 210, b: 210}, 5);
+
+    // drawPlanet(sun_positions[0], {r: 232, g: 63, b: 25}, 10);
+    // drawPlanet(earth_positions[0], {r: 50, g: 150, b: 230}, 10);
+    // drawPlanet(jupiter_positions[0], {r: 219, g: 113, b: 52}, 10);
+    // drawPlanet(saturn_positions[0], {r: 209, g: 149, b: 29}, 10);
+    // drawPlanet(voyager_positions[0], {r: 210, g: 210, b: 210}, 5);
+
+    // stroke(255);
+    // au2m = 149597870700.0;
+    // drawPlanet({x: -1.3583948591909668E11/au2m, y: -8.066860152758499E10/au2m}, {r: 50, g: 150, b: 230}, 10);
+    // drawPlanet({x: -1.3583948591909668E11/au2m, y: -8.066860152758499E10/au2m}, {r: 210, g: 210, b: 210}, 5);
+    // drawPlanet({x:4.5907282659488403E11/au2m, y:-5.98892036361665E11/au2m}, {r: 219, g: 113, b: 52}, 10);
+    // drawPlanet({x:1.3670071918156335E12/au2m, y:2.959295091467507E11/au2m}, {r: 209, g: 149, b: 29}, 10);
 
     current_frame = (current_frame + (1 + frame_skipping)) % frames;
 }
@@ -63,8 +77,6 @@ function draw() {
 function drawPlanet(position, planet_color, radius) {
     var c = color(planet_color.r, planet_color.g, planet_color.b);
     fill(c);
-    // noStroke();
-    stroke(0);
     ellipse(world2canvas(position.x), world2canvas(-position.y), radius);
 }
 

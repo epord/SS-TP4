@@ -27,8 +27,8 @@ public class PlanetSimulatorSuite {
     Double day2s = 86400.0;                 // day to seconds
     Double aupd2mps = au2m / day2s;         // au/day to m/s
 
-    Double deltaT = day2s / 24.0 / 60;
-    Double timeLimit = 5.0 * (365.0 * day2s) * 2;
+    Double deltaT = day2s / 24.0 / 60.0;
+    Double timeLimit = 3.0 * (365.0 * day2s) * 2;
 
     Double maxVoyagerPosition = 10000000.0; // m
     Double maxVoyagerSpeed = 20000.0; // m/s
@@ -122,6 +122,57 @@ public class PlanetSimulatorSuite {
         System.out.println("Saving the octave grapher function in ss4.m");
         System.out.println(octaveBuilder.getOctaveGrapher(bestTrayectory,otherTrajectories));
 //        System.out.println(animationBuilder.getAnimationOutput(bestTrayectory,otherTrajectories));
+    }
+
+    public Pair<Double, List<Particle>> findNextSimilarPlanetDisposition(Double endingTime) {
+        Double initialAngleSum = null;
+        Double initialAngleJup = null;
+        Double initialAngleSat = null;
+        Double minAngleSumDifference = Double.MAX_VALUE;
+        List<Particle> similarDisposition = new ArrayList<>();
+        Double timeWithSimilarDisposition = 0.0;
+
+        List<Particle> initialPlanets = getSolarSystemConfiguration(0.0);
+        List<Particle> planets = initialPlanets;
+        StepCalculator stepCalculator = new LeapFrogVelvetCalculator(new PlanetsForce(), deltaT);
+        Double currentTime = 0.0;
+        while (Math.abs(currentTime) < Math.abs(endingTime)) {
+            Vector earth = findById("earth", planets).getPosition();
+            Vector jupiter = findById("jupiter", planets).getPosition();
+            Vector saturn = findById("saturn", planets).getPosition();
+
+            Double earthAngle = Math.atan2(earth.getY(), earth.getX());
+            Double jupiterAngle = Math.atan2(jupiter.getY(), jupiter.getX());
+            Double saturnAngle = Math.atan2(saturn.getY(), saturn.getX());
+
+            Double angleJup = jupiterAngle - earthAngle;
+            Double angleSat = saturnAngle - earthAngle;
+            Double angleSum = angleJup + angleSat;
+            if (initialAngleSum == null){
+                initialAngleSum = angleSum;
+                initialAngleJup = angleJup;
+                initialAngleSat = angleSat;
+                System.out.println("===INIITAL:===");
+                System.out.println("j: " + (jupiterAngle - earthAngle) + " s: " + (saturnAngle - earthAngle));
+            } else {
+                Double angleSumDifference = Math.abs(initialAngleSum - angleSum);
+                if (angleSumDifference < minAngleSumDifference
+                        && Math.abs(angleJup - initialAngleJup) < 0.0872665 && Math.abs(angleSat - initialAngleSat) <  0.0872665){
+                    minAngleSumDifference = angleSumDifference;
+                    similarDisposition = planets;
+                    timeWithSimilarDisposition = currentTime;
+                    System.out.println("===NEW:" + angleSumDifference + "===");
+                    System.out.println("j: " + (jupiterAngle - earthAngle) + " s: " + (saturnAngle - earthAngle));
+                }
+            }
+
+//            System.out.println(currentTime + "/" + endingTime);
+            planets = stepCalculator.updateParticles(planets);
+            currentTime += deltaT;
+        }
+
+        System.out.println(minAngleSumDifference);
+        return new Pair<>(timeWithSimilarDisposition, similarDisposition);
     }
 
     private Pair<List<Double>,List<Double>> getVoyagerTrayectory(ExperimentStatsHolder<PlanetMetrics> holder){

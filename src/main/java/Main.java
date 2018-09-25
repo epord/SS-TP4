@@ -52,9 +52,22 @@ public class Main {
         //incrementing every time by the step. If start = end, only that value will be tested.
         //It will test every speed with every height, so be careful with the steps
         PlanetSimulatorSuite planetSimulatorSuite =
-                new PlanetSimulatorSuite(1.0,1.0,0.2,0.45,0.55,0.01);
+//                new PlanetSimulatorSuite(1.0,1.0,0.2,0.5278,0.5280,0.00001);
+//                new PlanetSimulatorSuite(1.0,1.0,0.2,0.52788,0.52790,0.000001);
+//                new PlanetSimulatorSuite(1.0,1.0,0.2,0.527884,0.527886,0.0000001);
+//                new PlanetSimulatorSuite(0.5,0.5,0.1,0.6,0.8,0.02);
+//                new PlanetSimulatorSuite(0.5,0.5,0.02,0.779,0.781,0.0002);
+//                new PlanetSimulatorSuite(0.5,0.5,0.02,0.7797,0.7799,0.00002);
+                new PlanetSimulatorSuite(0.5,0.5,0.02,0.77974,0.77974,0.00002);
+//                new PlanetSimulatorSuite(0.499,0.501,0.0002,0.7797,0.7797,0.00002);
+//                new PlanetSimulatorSuite(0.562189,1.1,1.1,0.773,0.8,0.1);
+//                new PlanetSimulatorSuite(0.0,1.0,0.2,0.70,0.90,0.01);
         //Set the max suboptimal trayectories to draw
         planetSimulatorSuite.run(10);
+    }
+
+    private static void runWithSearch(){
+
     }
 
 

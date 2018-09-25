@@ -1,5 +1,6 @@
 package Planets;
 
+import CalculationMethods.Implementations.BeemanCalculator;
 import CalculationMethods.Implementations.LeapFrogVelvetCalculator;
 import CalculationMethods.StepCalculator;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
@@ -26,8 +27,8 @@ public class PlanetSimulatorSuite {
     Double day2s = 86400.0;                 // day to seconds
     Double aupd2mps = au2m / day2s;         // au/day to m/s
 
-    Double deltaT = day2s / 24.0;
-    Double timeLimit = 5.0 * (365.0 * day2s);
+    Double deltaT = day2s / 24.0 / 60;
+    Double timeLimit = 5.0 * (365.0 * day2s) * 2;
 
     Double maxVoyagerPosition = 10000000.0; // m
     Double maxVoyagerSpeed = 20000.0; // m/s
@@ -106,10 +107,12 @@ public class PlanetSimulatorSuite {
         System.out.println(agregator.buildStatsOutput(Arrays.asList(Operation.MEAN)));
         System.out.println("Closest Journey");
         System.out.println(statusString);
+
+        System.out.println("Closest posible distance = " + (60268000.0 + 71492000.0));
         for (PlanetMetrics pm : suiteHolder.getActiveSeries()){
             System.out.println(pm + " = " + suiteHolder.getDataSeries(pm).get(closestIndex).getValue());
         }
-//        FileManager.writeString("out.csv",ExperimentsStatsAgregator.getFromHolders(bestTrayectory).buildStatsOutput(Operation.MEAN).toString());
+        FileManager.writeString("out.csv",ExperimentsStatsAgregator.getFromHolders  (bestTrayectory).buildStatsOutput(Operation.MEAN).toString());
         System.out.println("Octave Graph");
         FileManager.writeString("ss4.m",octaveBuilder.getOctaveGrapher(bestTrayectory,otherTrajectories));
         FileManager.writeString("p5/empty-example/output.txt",animationBuilder.getAnimationOutput(bestTrayectory,otherTrajectories));
@@ -161,7 +164,7 @@ public class PlanetSimulatorSuite {
                 voyagerPosition,
                 voyagerVelocity,
                 new Vector(0.0, 0.0),
-                721.9);
+                7219.0);
 
 //        System.out.println("h: "+ voyagerHeightPercentage + ",s:" + voyagerSpeedPercentage + "||"+ voyager);
         return Arrays.asList(sun, earth, jupiter, saturn, voyager);

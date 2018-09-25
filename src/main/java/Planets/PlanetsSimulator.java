@@ -18,6 +18,7 @@ public class PlanetsSimulator {
     private Double timeLimit;
     private StepCalculator stepCalculator;
     private List<Particle> particles;
+    private final Double oneDay = 24*60*60.0;
 
     public PlanetsSimulator(Double deltaT, Double timeLimit, StepCalculator stepCalculator, List<Particle> particles) {
         this.deltaT = deltaT;
@@ -32,21 +33,33 @@ public class PlanetsSimulator {
 
         DataPoint jupiterClosestAproach = new DataPoint(0.0,Double.MAX_VALUE);
         DataPoint saturnClosestAproach = new DataPoint(0.0,Double.MAX_VALUE);
+        Double lastTimeRecorded = currentTime;
         while(currentTime < timeLimit) {
-            Vector voyager = findById("voyager").getPosition();
+            Particle voyager = findById("voyager");
             Vector jupiter = findById("jupiter").getPosition();
             Vector saturn = findById("saturn").getPosition();
             //Get the current distance from voyager to jupiter/saturn
-            DataPoint jupiterDistance = new DataPoint(currentTime,voyager.minus(jupiter).getNorm());
-            DataPoint saturnDistance = new DataPoint(currentTime,voyager.minus(saturn).getNorm());
+            DataPoint saturnDistance = new DataPoint(currentTime,voyager.getPosition().distance(saturn));
+            DataPoint jupiterDistance = new DataPoint(currentTime,voyager.getPosition().distance(jupiter));
+            if(voyager.getPosition().distance(saturn) < 60268000.0){
+                saturnDistance = new DataPoint(currentTime,Double.MAX_VALUE);
+            }
+            if(voyager.getPosition().distance(jupiter) < 71492000.0){
+                jupiterDistance = new DataPoint(currentTime,Double.MAX_VALUE);
+            }
             //Add it to the metrics
-            holder.addDataPoint(PlanetMetrics.SATURN_DISTANCE,currentTime,saturnDistance.getValue());
-            holder.addDataPoint(PlanetMetrics.JUPITER_DISTANCE,currentTime,jupiterDistance.getValue());
-            //See if it is the closest, and save it if it is
-            jupiterClosestAproach = getMin(jupiterClosestAproach, jupiterDistance);
-            saturnClosestAproach = getMin(saturnClosestAproach, saturnDistance);
+            if(currentTime - lastTimeRecorded > oneDay ){
+                holder.addDataPoint(PlanetMetrics.VOYAGER_MEAN_SPEED,currentTime,voyager.getVelocity().getNorm());
+                holder.addDataPoint(PlanetMetrics.TIME,currentTime,currentTime);
+                holder.addDataPoint(PlanetMetrics.SATURN_DISTANCE,currentTime,saturnDistance.getValue());
+                holder.addDataPoint(PlanetMetrics.JUPITER_DISTANCE,currentTime,jupiterDistance.getValue());
+                fillHolderWithPlanetPositions(holder,currentTime);
+                lastTimeRecorded = currentTime;
+            }
 
-            fillHolderWithPlanetPositions(holder,currentTime);
+            //See if it is the closest, and save it if it is
+            saturnClosestAproach = getMin(saturnClosestAproach, saturnDistance);
+            jupiterClosestAproach = getMin(jupiterClosestAproach, jupiterDistance);
             particles = stepCalculator.updateParticles(particles);
             currentTime += deltaT;
         }

@@ -1,6 +1,5 @@
 package Planets;
 
-import CalculationMethods.Implementations.BeemanCalculator;
 import CalculationMethods.Implementations.LeapFrogVelvetCalculator;
 import CalculationMethods.StepCalculator;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;

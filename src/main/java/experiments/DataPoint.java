@@ -16,4 +16,9 @@ public class DataPoint {
         this.time = time;
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }

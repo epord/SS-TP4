@@ -12,9 +12,11 @@ import Planets.PlanetsSimulator;
 import experiments.ExperimentStatsHolder;
 import experiments.ExperimentsStatsAgregator;
 import experiments.Operation;
+import helpers.FileManager;
 import models.Particle;
 import models.Vector;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,20 +31,82 @@ public class Main {
     }
 
     private static void runOscillatorSimulation() {
-        Double deltaT = 0.03;
-        Double timeLimit = 3.0;
+        Double deltaT = 0.01;
+        Double timeLimit = 5.0;
 
         int id = 0;
-        Particle p = new Particle(id++, new Vector(1.0, 0.0), new Vector(0.0, 0.0), new Vector(0.0, 0.0), 70.0);
+        Particle p;
+        p = new Particle(id++, new Vector(1.0, 0.0), new Vector(-100.0/(2.0 * 70.0), 0.0), new Vector(0.0, 0.0), 70.0);
 
-//        StepCalculator stepCalculator = new LeapFrogVelvetCalculator(new OscillatorForce(), deltaT);
-//        StepCalculator stepCalculator = new BeemanCalculator(new OscillatorForce(), deltaT,  Arrays.asList(p));
-        StepCalculator stepCalculator = new GearCalculator(new OscillatorForce(), deltaT, new GearOscillatorUtils(), Collections.singletonList(p));
+        List<Double> leapFrogErrors = new ArrayList<>();
+        List<Double> beemanErrors = new ArrayList<>();
+        List<Double> gearErrors = new ArrayList<>();
+        List<Double> deltaTs = new ArrayList<>();
 
-        OscillatorSimulator oscillator = new OscillatorSimulator(deltaT, timeLimit, stepCalculator, p);
-        ExperimentsStatsAgregator<OscilatorMetrics> agregator = new ExperimentsStatsAgregator<>();
-        agregator.addStatsHolder(oscillator.start());
-        System.out.println(agregator.buildStatsOutput(Arrays.asList(Operation.MEAN)));
+        for (; deltaT >= 0.001; deltaT -= 0.0005) {
+            // LEAP FROG (VERLET)
+            ExperimentsStatsAgregator<OscilatorMetrics> agregatorLeapFrog = new ExperimentsStatsAgregator<>();
+            StepCalculator stepCalculatorLeapFrog = new LeapFrogVelvetCalculator(new OscillatorForce(), deltaT);
+            OscillatorSimulator oscillatorLeapFrog = new OscillatorSimulator(deltaT, timeLimit, stepCalculatorLeapFrog, p);
+            ExperimentStatsHolder<OscilatorMetrics> statsHolderLeapFrog = oscillatorLeapFrog.start();
+            agregatorLeapFrog.addStatsHolder(statsHolderLeapFrog);
+//            System.out.println(statsHolderLeapFrog.getDataSeries(OscilatorMetrics.SIM_X));
+            Double meanSquaredErrorLeapFrog = statsHolderLeapFrog.getDataSeries(OscilatorMetrics.ERROR).stream()
+                    .mapToDouble(dataPoint -> {
+                        return dataPoint.getValue();
+                    })
+                    .sum()
+                    / statsHolderLeapFrog.getDataSeries(OscilatorMetrics.ERROR).size();
+
+            // BEEMAN
+            ExperimentsStatsAgregator<OscilatorMetrics> agregatorBeeman = new ExperimentsStatsAgregator<>();
+            StepCalculator stepCalculatorBeeman = new BeemanCalculator(new OscillatorForce(), deltaT, Arrays.asList(p));
+            OscillatorSimulator oscillatorBeeman = new OscillatorSimulator(deltaT, timeLimit, stepCalculatorBeeman, p);
+            ExperimentStatsHolder<OscilatorMetrics> statsHolderBeeman = oscillatorBeeman.start();
+            agregatorBeeman.addStatsHolder(statsHolderBeeman);
+//            System.out.println(statsHolderBeeman.getDataSeries(OscilatorMetrics.SIM_X));
+            Double meanSquaredErrorBeeman = statsHolderBeeman.getDataSeries(OscilatorMetrics.ERROR).stream()
+                    .mapToDouble(dataPoint -> {
+                        return dataPoint.getValue();
+                    })
+                    .sum()
+                    / statsHolderBeeman.getDataSeries(OscilatorMetrics.ERROR).size();
+
+            // GEAR PREDICTOR CORRECTOR
+            ExperimentsStatsAgregator<OscilatorMetrics> agregatorGear = new ExperimentsStatsAgregator<>();
+            StepCalculator stepCalculatorGear = new GearCalculator(new OscillatorForce(), deltaT, new GearOscillatorUtils(), Collections.singletonList(p));
+            OscillatorSimulator oscillatorGear = new OscillatorSimulator(deltaT, timeLimit, stepCalculatorGear, p);
+            ExperimentStatsHolder<OscilatorMetrics> statsHolderGear = oscillatorGear.start();
+            agregatorGear.addStatsHolder(statsHolderGear);
+//            System.out.println(statsHolderGear.getDataSeries(OscilatorMetrics.SIM_X));
+            Double meanSquaredErrorGear = statsHolderGear.getDataSeries(OscilatorMetrics.ERROR).stream()
+                    .mapToDouble(dataPoint -> {
+                        return dataPoint.getValue();
+                    })
+                    .sum()
+                    / statsHolderGear.getDataSeries(OscilatorMetrics.ERROR).size();
+
+
+//            System.out.println(statsHolderGear.getDataSeries(OscilatorMetrics.CALC_X));
+//            System.out.println(statsHolderGear.getDataSeries(OscilatorMetrics.TIME));
+
+            leapFrogErrors.add(meanSquaredErrorLeapFrog);
+            beemanErrors.add(meanSquaredErrorBeeman);
+            gearErrors.add(meanSquaredErrorGear);
+            deltaTs.add(deltaT);
+//            System.out.println(meanSquaredErrorLeapFrog);
+//            System.out.println(meanSquaredErrorBeeman);
+//            System.out.println(meanSquaredErrorGear);
+        }
+
+        System.out.println((leapFrogErrors.get(leapFrogErrors.size()-1) - leapFrogErrors.get(0))
+                /(deltaTs.get(deltaTs.size()-1) - deltaTs.get(0)));
+
+        System.out.println(leapFrogErrors);
+        System.out.println(beemanErrors);
+        System.out.println(gearErrors);
+        System.out.println(deltaTs);
+
     }
 
 

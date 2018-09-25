@@ -9,6 +9,7 @@ import models.Vector;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class OctaveBuilder {
@@ -71,7 +72,7 @@ public class OctaveBuilder {
         stringBuilder.append(name+"=[");
         for (Double x : values)
             if (frame++ % (values.size() / finalFrameCount) == 0) {
-                stringBuilder.append(String.format("%."+precision+"f ",x/au2m));
+                stringBuilder.append(String.format(new Locale("en", "us"),"%."+precision+"f ",x/au2m));
             }
         stringBuilder.append("];\n");
         return stringBuilder.toString();

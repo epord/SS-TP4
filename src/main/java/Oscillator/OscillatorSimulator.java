@@ -36,7 +36,7 @@ public class OscillatorSimulator {
                 holder.addDataPoint(OscilatorMetrics.CALC_X,currentTime,calcX);
                 holder.addDataPoint(OscilatorMetrics.ERROR,currentTime,Math.pow(particle.getPosition().getX() - calcX,2));
                 holder.addDataPoint(OscilatorMetrics.TIME,currentTime,currentTime);
-                System.out.print(particle.getPosition().getX() + " ");
+//                System.out.print(particle.getPosition().getX() + " ");
             }
             particles = stepCalculator.updateParticles(particles);
             currentTime += deltaT;

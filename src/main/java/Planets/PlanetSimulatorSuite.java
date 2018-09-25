@@ -164,7 +164,7 @@ public class PlanetSimulatorSuite {
                 voyagerPosition,
                 voyagerVelocity,
                 new Vector(0.0, 0.0),
-                7219.0);
+                721.9);
 
 //        System.out.println("h: "+ voyagerHeightPercentage + ",s:" + voyagerSpeedPercentage + "||"+ voyager);
         return Arrays.asList(sun, earth, jupiter, saturn, voyager);
